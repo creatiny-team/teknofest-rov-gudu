@@ -29,8 +29,9 @@ union ArrayToInteger {
 } converter;
 union ArrayToDouble {
     byte array[4];
-    double doubl;
+    double number;
 } doubler;
+
 void setup()
 {
     Serial.begin(9600);
@@ -51,76 +52,75 @@ void setup()
 
 void loop()
 {
+    //
     if(Serial.available())
     {
       int incomingByte = Serial.read();
       hizBoleni = incomingByte / 10.0;
     }
+    
+    // rov'dan gelen basinc ve sicaklik degerleri okunup serial'den basiliyor
     if (mcp2515.readMessage(&canRcv) == MCP2515::ERROR_OK)
     {
-
         if (canRcv.can_id == 0x03)
         {
-
             doubler.array[0] = canRcv.data[0];
             doubler.array[1] = canRcv.data[1];
             doubler.array[2] = canRcv.data[2];
             doubler.array[3] = canRcv.data[3];
-            Serial.print('b');
-            Serial.println(doubler.doubl);
+            Serial.print('b'); // basinc belirteci
+            Serial.println(doubler.number);
             doubler.array[0] = canRcv.data[4];
             doubler.array[1] = canRcv.data[5];
             doubler.array[2] = canRcv.data[6];
             doubler.array[3] = canRcv.data[7];
-            Serial.print('s');
-            Serial.println(doubler.doubl);
+            Serial.print('s'); // sicaklik belirteci
+            Serial.println(doubler.number);
         }
     }
 
+    // joystick'lerde ortada gelen veriyi 1500'e esitlemek icin
     valueJoyStick_X_1 = analogRead(pinJoyStick_X_1) + 970;
     valueJoyStick_Y_1 = analogRead(pinJoyStick_Y_1) + 970;
     valueJoyStick_X_2 = analogRead(pinJoyStick_X_2) + 970;
     valueJoyStick_Y_2 = analogRead(pinJoyStick_Y_2) + 970;
 
+    // sagdaki joystick ters takilik, onu duzeltmek icin
     valueJoyStick_X_2 = 3000 - valueJoyStick_X_2;
     valueJoyStick_Y_2 = 3000 - valueJoyStick_Y_2;
 
+    // hizi merkezi bozmadan bolmek icin
     valueJoyStick_X_1 = 1500 + (valueJoyStick_X_1 - 1500) / hizBoleni;
     valueJoyStick_Y_1 = 1500 + (valueJoyStick_Y_1 - 1500) / hizBoleni;
     valueJoyStick_X_2 = 1500 + (valueJoyStick_X_2 - 1500) / hizBoleni;
     valueJoyStick_Y_2 = 1500 + (valueJoyStick_Y_2 - 1500) / hizBoleni;
-    valueJoyStick_X_1 = 3000 - valueJoyStick_X_1;
     
+    valueJoyStick_X_1 = 3000 - valueJoyStick_X_1; // rov'un yönü değiştirildi
+
     if (valueJoyStick_X_1 > maxdeger)
         valueJoyStick_X_1 = maxdeger;
-
     if (valueJoyStick_Y_1 > maxdeger)
         valueJoyStick_Y_1 = maxdeger;
-
     if (valueJoyStick_X_2 > maxdeger)
         valueJoyStick_X_2 = maxdeger;
-
     if (valueJoyStick_X_1 < mindeger)
         valueJoyStick_X_1 = mindeger;
-
     if (valueJoyStick_Y_1 < mindeger)
         valueJoyStick_Y_1 = mindeger;
-
     if (valueJoyStick_X_2 < mindeger)
         valueJoyStick_X_2 = mindeger;
 
+    // joystick'ler belli bi toleransla ortadayken 1500'e sabitliyoruz
     if (valueJoyStick_X_1 < 1500 + sabitleme_toleransi && valueJoyStick_X_1 > 1500 - sabitleme_toleransi)
         valueJoyStick_X_1 = 1500;
-
     if (valueJoyStick_Y_1 < 1500 + sabitleme_toleransi && valueJoyStick_Y_1 > 1500 - sabitleme_toleransi)
         valueJoyStick_Y_1 = 1500;
-
     if (valueJoyStick_X_2 < 1500 + sabitleme_toleransi && valueJoyStick_X_2 > 1500 - sabitleme_toleransi)
         valueJoyStick_X_2 = 1500;
-
     if (valueJoyStick_Y_2 < 1500 + sabitleme_toleransi && valueJoyStick_Y_2 > 1500 - sabitleme_toleransi)
         valueJoyStick_Y_2 = 1500;
 
+    // joystick degerleri 8 byte'a siralanip yollaniyor
     canSend.can_id = 0x02;
     canSend.can_dlc = 8;
     canSend.data[0] = highByte(valueJoyStick_X_1);
@@ -132,6 +132,7 @@ void loop()
     canSend.data[6] = highByte(valueJoyStick_Y_2);
     canSend.data[7] = lowByte(valueJoyStick_Y_2);
 
+    // q-w-e-r her degerin bilgisayardan ayirt edilmesi icin ayri kodlar
     Serial.print('q');
     Serial.println(valueJoyStick_X_1);
     Serial.print('w');
@@ -140,9 +141,6 @@ void loop()
     Serial.println(valueJoyStick_X_2);
     Serial.print('r');
     Serial.println(valueJoyStick_Y_2);
-
-    if (valueJoyStick_Y_1 < 1500 + sabitleme_toleransi && valueJoyStick_Y_1 > 1500 - sabitleme_toleransi)
-        valueJoyStick_Y_1 = 1500;
 
     mcp2515.sendMessage(&canSend);
     delay(100);
