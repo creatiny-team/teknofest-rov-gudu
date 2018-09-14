@@ -6,6 +6,7 @@
 
 struct can_frame canMsg; // gelen mesaj
 struct can_frame canSnd; // giden mesaj
+
 MCP2515 mcp2515(10);
 
 int valueJoyStick_X_1 = 0;
@@ -17,12 +18,7 @@ unsigned long startMillis; //program süre sayıcısının başlangıç zaman de
 unsigned long currentMillis;
 const unsigned long period = 1000; // basınç sensörü ölçüm aralığı
 
-Servo on;
-Servo arka;
-Servo onsa;
-Servo onso;
-Servo arsa;
-Servo arso;
+Servo on, arka, onsa, onso, arsa, arso;
 
 int on_deger, arka_deger, onsa_deger, onso_deger, arsa_deger, arso_deger;
 
@@ -71,7 +67,7 @@ void loop()
     if (mcp2515.readMessage(&canMsg) == MCP2515::ERROR_OK)
     {
 
-        /* Canbus verisi geliyor mu diye test
+        /*
     Serial.print(canMsg.can_id, HEX); // print ID
     Serial.print(" "); 
     Serial.print(canMsg.can_dlc, HEX); // print DLC
@@ -128,6 +124,7 @@ void loop()
             Serial.println("--");
         }
     }
+    
     if (currentMillis - startMillis >= period) //test whether the period has elapsed
     {
         pressure_abs = prsensor.getPressure(ADC_4096);

@@ -141,7 +141,7 @@ void loop()
     Serial.print('r');
     Serial.println(valueJoyStick_Y_2);
 
-    if (valueJoyStick_Y_1 < 1550 && valueJoyStick_Y_1 > 1450)
+    if (valueJoyStick_Y_1 < 1500 + sabitleme_toleransi && valueJoyStick_Y_1 > 1500 - sabitleme_toleransi)
         valueJoyStick_Y_1 = 1500;
 
     mcp2515.sendMessage(&canSend);
