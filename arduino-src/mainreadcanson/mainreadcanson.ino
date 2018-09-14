@@ -32,7 +32,7 @@ union ArrayToInteger {
 
 union ArrayToDouble {
     byte array[4];
-    double doubl;
+    double number;
 } doubler;
 
 MS5803 prsensor(ADDRESS_HIGH); // basinc - sicaklik sensoru
@@ -143,25 +143,23 @@ void loop()
     {
         pressure_abs = prsensor.getPressure(ADC_4096);
         temperature_c = prsensor.getTemperature(CELSIUS, ADC_4096);
-        //
         
         Serial.println(pressure_abs);
         Serial.println(temperature_c);
-        doubler.doubl = pressure_abs;
-
+        
         canSnd.can_id = 0x03;
         canSnd.can_dlc = 8;
+        doubler.number = pressure_abs;
         canSnd.data[0] = doubler.array[0];
         canSnd.data[1] = doubler.array[1];
         canSnd.data[2] = doubler.array[2];
         canSnd.data[3] = doubler.array[3];
-        doubler.doubl = temperature_c;
+        doubler.number = temperature_c;
         canSnd.data[4] = doubler.array[0];
         canSnd.data[5] = doubler.array[1];
         canSnd.data[6] = doubler.array[2];
         canSnd.data[7] = doubler.array[3];
 
-        mcp2515.sendMessage(&canSnd);
         startMillis = currentMillis; //IMPORTANT to save the start time of the current LED state.
         mcp2515.sendMessage(&canSnd);
     }
