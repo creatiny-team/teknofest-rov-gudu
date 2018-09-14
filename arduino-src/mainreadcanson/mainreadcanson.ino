@@ -9,12 +9,12 @@ struct can_frame canSnd; // giden mesaj
 MCP2515 mcp2515(10);
 
 int valueJoyStick_X_1 = 0;
-int valueJoyStick_Y_1 = 0; 
+int valueJoyStick_Y_1 = 0;
 int valueJoyStick_X_2 = 0;
 int valueJoyStick_Y_2 = 0;
 
 unsigned long startMillis; //program süre sayıcısının başlangıç zaman değişkeni
-unsigned long currentMillis; 
+unsigned long currentMillis;
 const unsigned long period = 1000; // basınç sensörü ölçüm aralığı
 
 Servo on;
@@ -94,39 +94,26 @@ void loop()
 
             on.writeMicroseconds(valueJoyStick_Y_1);
             arka.writeMicroseconds(valueJoyStick_Y_1);
-            onsa_deger= 1500 + (valueJoyStick_X_2-1500) - (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1-1500);
-            onso_deger= 1500 + (valueJoyStick_X_2-1500) + (valueJoyStick_Y_2 - 1500) + (valueJoyStick_Y_1-1500);
-            onsa_deger= 1500 + (valueJoyStick_X_2-1500) + (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1-1500);
-            arso_deger= 1500 + (valueJoyStick_X_2-1500) - (valueJoyStick_Y_2 - 1500) + (valueJoyStick_Y_1-1500);
-            if (onsa_deger>= 2000) onsa_deger=2000; else if (onsa_deger<= 1000) onsa_deger=1000;
-            if (arsa_deger>= 2000) arsa_deger=2000; else if (arsa_deger<= 1000) onsa_deger=1000;
-            if (onso_deger>= 2000) onso_deger=2000; else if (onso_deger<= 1000) onsa_deger=1000;
-            if (arso_deger>= 2000) arso_deger=2000; else if (arso_deger<= 1000) onsa_deger=1000;
-            /*
-            if (abs(1500 - valueJoyStick_Y_1) >= abs(1500 - valueJoyStick_X_1) && abs(1500 - valueJoyStick_Y_1) >= abs(1500 - valueJoyStick_X_2))
-            {
-                Serial.println("Y");
-                onsa.writeMicroseconds(valueJoyStick_Y_1);
-                onso.writeMicroseconds(abs(3000 - valueJoyStick_Y_1));
-                arsa.writeMicroseconds(valueJoyStick_Y_1);
-                arso.writeMicroseconds(abs(3000 - valueJoyStick_Y_1)); //arso esc kabloları ters bağlanmış ondan bunu ters çevirdik
-            }
-            else if (abs(1500 - valueJoyStick_X_1) >= abs(1500 - valueJoyStick_Y_1) && abs(1500 - valueJoyStick_X_1) >= abs(1500 - valueJoyStick_X_2))
-            {
-                Serial.println("x1");
-                onsa.writeMicroseconds(abs(3000 - valueJoyStick_X_1));
-                onso.writeMicroseconds(abs(3000 - valueJoyStick_X_1));
-                arsa.writeMicroseconds(abs(3000 - valueJoyStick_X_1));
-                arso.writeMicroseconds(abs(3000 - valueJoyStick_X_1));
-            }
-            else if (abs(1500 - valueJoyStick_X_2) >= abs(1500 - valueJoyStick_Y_1) && abs(1500 - valueJoyStick_X_2) >= abs(1500 - valueJoyStick_X_1))
-            {
-                Serial.println("x2");
-                onsa.writeMicroseconds(valueJoyStick_X_2);
-                onso.writeMicroseconds(valueJoyStick_X_2);
-                arsa.writeMicroseconds(abs(3000 - valueJoyStick_X_2));
-                arso.writeMicroseconds(abs(3000 - valueJoyStick_X_2));
-            }*/
+            onsa_deger = 1500 + (valueJoyStick_X_2 - 1500) - (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1 - 1500);
+            onso_deger = 1500 + (valueJoyStick_X_2 - 1500) + (valueJoyStick_Y_2 - 1500) + (valueJoyStick_Y_1 - 1500);
+            onsa_deger = 1500 + (valueJoyStick_X_2 - 1500) + (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1 - 1500);
+            arso_deger = 1500 + (valueJoyStick_X_2 - 1500) - (valueJoyStick_Y_2 - 1500) + (valueJoyStick_Y_1 - 1500);
+            if (onsa_deger >= 2000)
+                onsa_deger = 2000;
+            else if (onsa_deger <= 1000)
+                onsa_deger = 1000;
+            if (arsa_deger >= 2000)
+                arsa_deger = 2000;
+            else if (arsa_deger <= 1000)
+                onsa_deger = 1000;
+            if (onso_deger >= 2000)
+                onso_deger = 2000;
+            else if (onso_deger <= 1000)
+                onsa_deger = 1000;
+            if (arso_deger >= 2000)
+                arso_deger = 2000;
+            else if (arso_deger <= 1000)
+                onsa_deger = 1000;
 
             delay(100);
             Serial.print(valueJoyStick_X_1);
@@ -143,10 +130,10 @@ void loop()
     {
         pressure_abs = prsensor.getPressure(ADC_4096);
         temperature_c = prsensor.getTemperature(CELSIUS, ADC_4096);
-        
+
         Serial.println(pressure_abs);
         Serial.println(temperature_c);
-        
+
         canSnd.can_id = 0x03;
         canSnd.can_dlc = 8;
         doubler.number = pressure_abs;
@@ -159,7 +146,7 @@ void loop()
         canSnd.data[5] = doubler.array[1];
         canSnd.data[6] = doubler.array[2];
         canSnd.data[7] = doubler.array[3];
-        
+
         startMillis = currentMillis; //IMPORTANT to save the start time of the current LED state.
         mcp2515.sendMessage(&canSnd);
     }
