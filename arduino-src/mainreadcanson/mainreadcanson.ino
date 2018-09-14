@@ -111,7 +111,10 @@ void loop()
                 arso_deger = 2000;
             else if (arso_deger <= 1000)
                 onsa_deger = 1000;
-
+              onsa.writeMicroseconds(onsa_deger);
+              onso.writeMicroseconds(onso_deger);
+              arsa.writeMicroseconds(arso_deger);
+              arso.writeMicroseconds(arso_deger);
             delay(100);
             
             Serial.print(valueJoyStick_X_1);
