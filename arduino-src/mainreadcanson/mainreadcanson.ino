@@ -151,7 +151,6 @@ void loop()
         canSnd.data[6] = doubler.array[2];
         canSnd.data[7] = doubler.array[3];
 
-        mcp2515.sendMessage(&canSnd);
         startMillis = currentMillis; //IMPORTANT to save the start time of the current LED state.
         mcp2515.sendMessage(&canSnd);
     }
