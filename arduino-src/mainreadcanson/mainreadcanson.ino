@@ -99,9 +99,9 @@ void loop()
             onsa_deger= 1500 + (valueJoyStick_X_2-1500) + (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1-1500);
             arso_deger= 1500 + (valueJoyStick_X_2-1500) - (valueJoyStick_Y_2 - 1500) + (valueJoyStick_Y_1-1500);
             if (onsa_deger>= 2000) onsa_deger=2000; else if (onsa_deger<= 1000) onsa_deger=1000;
-            if (ansa_deger>= 2000) onsa_deger=2000; else if (onsa_deger<= 1000) onsa_deger=1000;
+            if (arsa_deger>= 2000) onsa_deger=2000; else if (arsa_deger<= 1000) onsa_deger=1000;
             if (onso_deger>= 2000) onsa_deger=2000; else if (onsa_deger<= 1000) onsa_deger=1000;
-            if (anso_deger>= 2000) onsa_deger=2000; else if (onsa_deger<= 1000) onsa_deger=1000;
+            if (arso_deger>= 2000) onsa_deger=2000; else if (arsa_deger<= 1000) onsa_deger=1000;
             /*
             if (abs(1500 - valueJoyStick_Y_1) >= abs(1500 - valueJoyStick_X_1) && abs(1500 - valueJoyStick_Y_1) >= abs(1500 - valueJoyStick_X_2))
             {
