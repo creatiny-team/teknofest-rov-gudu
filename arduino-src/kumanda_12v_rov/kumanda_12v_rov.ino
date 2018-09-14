@@ -2,19 +2,16 @@
 #include <SPI.h>
 #include <mcp2515.h>
 
-
-
-struct can_frame canMsg1;
-struct can_frame canMsg2;
-
-struct can_frame canRcv;
-MCP2515 mcp2515(10);
-
-float hizBoleni = 1.0;
-
 #define maxdeger 2000 //max 2000 oluyor escler 1000-2000 arası calisir
 #define mindeger 1000
 #define sabitleme_toleransi 30
+
+struct can_frame canSend;
+struct can_frame canRcv;
+
+MCP2515 mcp2515(10);
+
+float hizBoleni = 1.0;
 
 int pinJoyStick_X_1 = 2;
 int pinJoyStick_Y_1 = 3;
@@ -124,16 +121,16 @@ void loop()
     if (valueJoyStick_Y_2 < 1500 + sabitleme_toleransi && valueJoyStick_Y_2 > 1500 - sabitleme_toleransi)
         valueJoyStick_Y_2 = 1500;
 
-    canMsg1.can_id = 0x02;
-    canMsg1.can_dlc = 8;
-    canMsg1.data[0] = highByte(valueJoyStick_X_1);
-    canMsg1.data[1] = lowByte(valueJoyStick_X_1);
-    canMsg1.data[2] = highByte(valueJoyStick_Y_1);
-    canMsg1.data[3] = lowByte(valueJoyStick_Y_1);
-    canMsg1.data[4] = highByte(valueJoyStick_X_2);
-    canMsg1.data[5] = lowByte(valueJoyStick_X_2);
-    canMsg1.data[6] = highByte(valueJoyStick_Y_2);
-    canMsg1.data[7] = lowByte(valueJoyStick_Y_2);
+    canSend.can_id = 0x02;
+    canSend.can_dlc = 8;
+    canSend.data[0] = highByte(valueJoyStick_X_1);
+    canSend.data[1] = lowByte(valueJoyStick_X_1);
+    canSend.data[2] = highByte(valueJoyStick_Y_1);
+    canSend.data[3] = lowByte(valueJoyStick_Y_1);
+    canSend.data[4] = highByte(valueJoyStick_X_2);
+    canSend.data[5] = lowByte(valueJoyStick_X_2);
+    canSend.data[6] = highByte(valueJoyStick_Y_2);
+    canSend.data[7] = lowByte(valueJoyStick_Y_2);
 
     Serial.print('q');
     Serial.println(valueJoyStick_X_1);
@@ -147,7 +144,6 @@ void loop()
     if (valueJoyStick_Y_1 < 1550 && valueJoyStick_Y_1 > 1450)
         valueJoyStick_Y_1 = 1500;
 
-
-    mcp2515.sendMessage(&canMsg1);
+    mcp2515.sendMessage(&canSend);
     delay(100);
 }

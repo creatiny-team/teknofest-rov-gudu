@@ -25,6 +25,7 @@ Servo arsa;
 Servo arso;
 
 int on_deger, arka_deger, onsa_deger, onso_deger, arsa_deger, arso_deger;
+
 union ArrayToInteger {
     byte array[2];
     int integer;
@@ -116,6 +117,7 @@ void loop()
                 onsa_deger = 1000;
 
             delay(100);
+            
             Serial.print(valueJoyStick_X_1);
             Serial.print("--");
             Serial.print(valueJoyStick_Y_1);
