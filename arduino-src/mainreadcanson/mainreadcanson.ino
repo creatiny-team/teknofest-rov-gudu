@@ -24,6 +24,7 @@ Servo onso;
 Servo arsa;
 Servo arso;
 
+int on_deger, arka_deger, onsa_deger, onso_deger, arsa_deger, arso_deger;
 union ArrayToInteger {
     byte array[2];
     int integer;
@@ -69,7 +70,7 @@ void loop()
     if (mcp2515.readMessage(&canMsg) == MCP2515::ERROR_OK)
     {
 
-        /*
+        /* Canbus verisi geliyor mu diye test
     Serial.print(canMsg.can_id, HEX); // print ID
     Serial.print(" "); 
     Serial.print(canMsg.can_dlc, HEX); // print DLC
@@ -91,8 +92,17 @@ void loop()
                     valueJoyStick_Y_2 = converter.integer;
             }
 
-            on.writeMicroseconds(valueJoyStick_Y_2);
-            arka.writeMicroseconds(valueJoyStick_Y_2);
+            on.writeMicroseconds(valueJoyStick_Y_1);
+            arka.writeMicroseconds(valueJoyStick_Y_1);
+            onsa_deger= 1500 + (valueJoyStick_X_2-1500) - (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1-1500);
+            onso_deger= 1500 + (valueJoyStick_X_2-1500) + (valueJoyStick_Y_2 - 1500) + (valueJoyStick_Y_1-1500);
+            onsa_deger= 1500 + (valueJoyStick_X_2-1500) + (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1-1500);
+            arso_deger= 1500 + (valueJoyStick_X_2-1500) - (valueJoyStick_Y_2 - 1500) + (valueJoyStick_Y_1-1500);
+            if (onsa_deger>= 2000) onsa_deger=2000; else if (onsa_deger<= 1000) onsa_deger=1000;
+            if (ansa_deger>= 2000) onsa_deger=2000; else if (onsa_deger<= 1000) onsa_deger=1000;
+            if (onso_deger>= 2000) onsa_deger=2000; else if (onsa_deger<= 1000) onsa_deger=1000;
+            if (anso_deger>= 2000) onsa_deger=2000; else if (onsa_deger<= 1000) onsa_deger=1000;
+            /*
             if (abs(1500 - valueJoyStick_Y_1) >= abs(1500 - valueJoyStick_X_1) && abs(1500 - valueJoyStick_Y_1) >= abs(1500 - valueJoyStick_X_2))
             {
                 Serial.println("Y");
@@ -116,7 +126,7 @@ void loop()
                 onso.writeMicroseconds(valueJoyStick_X_2);
                 arsa.writeMicroseconds(abs(3000 - valueJoyStick_X_2));
                 arso.writeMicroseconds(abs(3000 - valueJoyStick_X_2));
-            }
+            }*/
 
             delay(100);
             Serial.print(valueJoyStick_X_1);
