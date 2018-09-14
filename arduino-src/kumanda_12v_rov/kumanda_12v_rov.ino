@@ -85,17 +85,12 @@ void loop()
     valueJoyStick_X_2 = analogRead(pinJoyStick_X_2) + 970;
     valueJoyStick_Y_2 = analogRead(pinJoyStick_Y_2) + 970;
 
-    // sagdaki joystick ters takilik, onu duzeltmek icin
-    valueJoyStick_X_2 = 3000 - valueJoyStick_X_2;
-    valueJoyStick_Y_2 = 3000 - valueJoyStick_Y_2;
-
     // hizi merkezi bozmadan bolmek icin
     valueJoyStick_X_1 = 1500 + (valueJoyStick_X_1 - 1500) / hizBoleni;
     valueJoyStick_Y_1 = 1500 + (valueJoyStick_Y_1 - 1500) / hizBoleni;
     valueJoyStick_X_2 = 1500 + (valueJoyStick_X_2 - 1500) / hizBoleni;
     valueJoyStick_Y_2 = 1500 + (valueJoyStick_Y_2 - 1500) / hizBoleni;
     
-    valueJoyStick_X_1 = 3000 - valueJoyStick_X_1; // rov'un yönü değiştirildi
 
     if (valueJoyStick_X_1 > maxdeger)
         valueJoyStick_X_1 = maxdeger;
