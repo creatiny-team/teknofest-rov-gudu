@@ -6,7 +6,7 @@
 
 struct can_frame canMsg; // gelen mesaj
 struct can_frame canSnd; // giden mesaj
-MCP2515 mcp2515(10); // 
+MCP2515 mcp2515(10);
 
 int valueJoyStick_X_1 = 0;
 int valueJoyStick_Y_1 = 0; 
@@ -149,10 +149,8 @@ void loop()
         canSnd.data[5] = doubler.array[1];
         canSnd.data[6] = doubler.array[2];
         canSnd.data[7] = doubler.array[3];
-
+        
         startMillis = currentMillis; //IMPORTANT to save the start time of the current LED state.
         mcp2515.sendMessage(&canSnd);
     }
-
-    //Serial.print();
 }
