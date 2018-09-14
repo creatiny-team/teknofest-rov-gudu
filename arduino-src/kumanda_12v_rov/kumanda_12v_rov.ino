@@ -15,8 +15,8 @@ float hizBoleni = 1.0;
 
 int pinJoyStick_X_1 = 2;
 int pinJoyStick_Y_1 = 3;
-int pinJoyStick_X_2 = 1;
-int pinJoyStick_Y_2 = 0;
+int pinJoyStick_X_2 = 0;
+int pinJoyStick_Y_2 = 1;
 
 int valueJoyStick_X_1 = 0;
 int valueJoyStick_Y_1 = 0;
