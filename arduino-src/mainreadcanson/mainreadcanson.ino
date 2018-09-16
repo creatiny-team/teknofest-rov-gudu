@@ -89,11 +89,11 @@ void loop()
                     valueJoyStick_Y_2 = converter.integer;
             }
 
-            on.writeMicroseconds(valueJoyStick_Y_1);
-            arka.writeMicroseconds(valueJoyStick_Y_1);
+            on.writeMicroseconds(valueJoyStick_X_1);
+            arka.writeMicroseconds(valueJoyStick_X_1);
             onsa_deger = 1500 + (valueJoyStick_X_2 - 1500) - (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1 - 1500);
             onso_deger = 1500 + (valueJoyStick_X_2 - 1500) + (valueJoyStick_Y_2 - 1500) + (valueJoyStick_Y_1 - 1500);
-            onsa_deger = 1500 + (valueJoyStick_X_2 - 1500) + (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1 - 1500);
+            arsa_deger = 1500 + (valueJoyStick_X_2 - 1500) + (valueJoyStick_Y_2 - 1500) - (valueJoyStick_Y_1 - 1500);
             arso_deger = 1500 + (valueJoyStick_X_2 - 1500) - (valueJoyStick_Y_2 - 1500) + (valueJoyStick_Y_1 - 1500);
             if (onsa_deger >= 2000)
                 onsa_deger = 2000;
@@ -113,7 +113,7 @@ void loop()
                 onsa_deger = 1000;
               onsa.writeMicroseconds(onsa_deger);
               onso.writeMicroseconds(onso_deger);
-              arsa.writeMicroseconds(arso_deger);
+              arsa.writeMicroseconds(arsa_deger);
               arso.writeMicroseconds(arso_deger);
             delay(100);
             

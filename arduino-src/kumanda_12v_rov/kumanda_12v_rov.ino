@@ -107,11 +107,11 @@ void loop()
 
     // joystick'ler belli bi toleransla ortadayken 1500'e sabitliyoruz
     if (valueJoyStick_X_1 < 1500 + sabitleme_toleransi && valueJoyStick_X_1 > 1500 - sabitleme_toleransi)
-        valueJoyStick_X_1 = 1500;
+        valueJoyStick_X_1 = 1458;
     if (valueJoyStick_Y_1 < 1500 + sabitleme_toleransi && valueJoyStick_Y_1 > 1500 - sabitleme_toleransi)
         valueJoyStick_Y_1 = 1500;
     if (valueJoyStick_X_2 < 1500 + sabitleme_toleransi && valueJoyStick_X_2 > 1500 - sabitleme_toleransi)
-        valueJoyStick_X_2 = 1500;
+        valueJoyStick_X_2 = 1470;
     if (valueJoyStick_Y_2 < 1500 + sabitleme_toleransi && valueJoyStick_Y_2 > 1500 - sabitleme_toleransi)
         valueJoyStick_Y_2 = 1500;
 
