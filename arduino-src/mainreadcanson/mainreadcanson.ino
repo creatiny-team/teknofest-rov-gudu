@@ -46,7 +46,7 @@ void setup()
     startMillis = millis(); // guncel zaman
 
     mcp2515.reset();
-    mcp2515.setBitrate(CAN_125KBPS);
+    mcp2515.setBitrate(CAN_40KBPS);
     mcp2515.setNormalMode();
 
     on.attach(7, 1000, 2000);
@@ -122,7 +122,7 @@ void loop()
               arsa.writeMicroseconds(arsa_deger);
               arso.writeMicroseconds(arso_deger);
             delay(100);
-            
+            /*
             Serial.print(valueJoyStick_X_1);
             Serial.print("--");
             Serial.print(valueJoyStick_Y_1);
@@ -130,7 +130,7 @@ void loop()
             Serial.print(valueJoyStick_X_2);
             Serial.print("--");
             Serial.print(valueJoyStick_Y_2);
-            Serial.println("--");
+            Serial.println("--"); */
         }
     }
     
