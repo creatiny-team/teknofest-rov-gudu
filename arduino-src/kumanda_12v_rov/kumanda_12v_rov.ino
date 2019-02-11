@@ -6,17 +6,17 @@
 #define mindeger 1000
 #define sabitleme_toleransi 30
 
+#define pinJoyStick_X_1 2
+#define pinJoyStick_Y_1 3
+#define pinJoyStick_X_2 0
+#define pinJoyStick_Y_2 1
+
 struct can_frame canSend;
 struct can_frame canRcv;
 
 MCP2515 mcp2515(10);
 
 float hizBoleni = 1.0;
-
-int pinJoyStick_X_1 = 2;
-int pinJoyStick_Y_1 = 3;
-int pinJoyStick_X_2 = 0;
-int pinJoyStick_Y_2 = 1;
 
 int valueJoyStick_X_1 = 0;
 int valueJoyStick_Y_1 = 0;
@@ -26,11 +26,11 @@ int valueJoyStick_Y_2 = 0;
 union ArrayToInteger {
     byte array[2];
     int integer;
-} converter;
+} intConverter;
 union ArrayToDouble {
     byte array[4];
     double number;
-} doubler;
+} doubleConverter;
 
 void setup()
 {
@@ -47,35 +47,34 @@ void setup()
     pinMode(7, INPUT);
     pinMode(6, INPUT);
     pinMode(9, INPUT);
-
 }
 
 void loop()
 {
-    //
-    if(Serial.available())
+    // bilgisayardan gelen hiz bolucu deger, normalde gelen 10.
+    if (Serial.available())
     {
-      int incomingByte = Serial.read();
-      hizBoleni = incomingByte / 10.0;
+        int incomingByte = Serial.read();
+        hizBoleni = incomingByte / 10.0;
     }
-    
-    // rov'dan gelen basinc ve sicaklik degerleri okunup serial'den basiliyor
+
+    // rov'dan gelen basinc ve sicaklik degerleri bilgisayar okusun diye serial'den basiliyor
     if (mcp2515.readMessage(&canRcv) == MCP2515::ERROR_OK)
     {
         if (canRcv.can_id == 0x03)
         {
-            doubler.array[0] = canRcv.data[0];
-            doubler.array[1] = canRcv.data[1];
-            doubler.array[2] = canRcv.data[2];
-            doubler.array[3] = canRcv.data[3];
+            doubleConverter.array[0] = canRcv.data[0];
+            doubleConverter.array[1] = canRcv.data[1];
+            doubleConverter.array[2] = canRcv.data[2];
+            doubleConverter.array[3] = canRcv.data[3];
             Serial.print('b'); // basinc belirteci
-            Serial.println(doubler.number);
-            doubler.array[0] = canRcv.data[4];
-            doubler.array[1] = canRcv.data[5];
-            doubler.array[2] = canRcv.data[6];
-            doubler.array[3] = canRcv.data[7];
+            Serial.println(doubleConverter.number);
+            doubleConverter.array[0] = canRcv.data[4];
+            doubleConverter.array[1] = canRcv.data[5];
+            doubleConverter.array[2] = canRcv.data[6];
+            doubleConverter.array[3] = canRcv.data[7];
             Serial.print('s'); // sicaklik belirteci
-            Serial.println(doubler.number);
+            Serial.println(doubleConverter.number);
         }
     }
 
@@ -90,7 +89,6 @@ void loop()
     valueJoyStick_Y_1 = 1500 + (valueJoyStick_Y_1 - 1500) / hizBoleni;
     valueJoyStick_X_2 = 1500 + (valueJoyStick_X_2 - 1500) / hizBoleni;
     valueJoyStick_Y_2 = 1500 + (valueJoyStick_Y_2 - 1500) / hizBoleni;
-    
 
     if (valueJoyStick_X_1 > maxdeger)
         valueJoyStick_X_1 = maxdeger;
@@ -98,12 +96,17 @@ void loop()
         valueJoyStick_Y_1 = maxdeger;
     if (valueJoyStick_X_2 > maxdeger)
         valueJoyStick_X_2 = maxdeger;
+    if (valueJoyStick_Y_2 > maxdeger)
+        valueJoyStick_Y_2 = maxdeger;
+
     if (valueJoyStick_X_1 < mindeger)
         valueJoyStick_X_1 = mindeger;
     if (valueJoyStick_Y_1 < mindeger)
         valueJoyStick_Y_1 = mindeger;
     if (valueJoyStick_X_2 < mindeger)
         valueJoyStick_X_2 = mindeger;
+    if (valueJoyStick_Y_2 < mindeger)
+        valueJoyStick_Y_2 = mindeger;
 
     // joystick'ler belli bi toleransla ortadayken 1500'e sabitliyoruz
     if (valueJoyStick_X_1 < 1458 + sabitleme_toleransi / hizBoleni && valueJoyStick_X_1 > 1458 - sabitleme_toleransi / hizBoleni)

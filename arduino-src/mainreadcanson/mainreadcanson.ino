@@ -1,11 +1,10 @@
-#include <SPI.h>
 #include <Servo.h>
-#include <mcp2515.h>
 #include <Wire.h>
-#include <SparkFun_MS5803_I2C.h>
+#include <mcp2515.h>             //https://github.com/autowp/arduino-mcp2515
+#include <SparkFun_MS5803_I2C.h> //https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
 
-struct can_frame canMsg; // gelen mesaj
-struct can_frame canSnd; // giden mesaj
+struct can_frame canMsg; // gelen mesaj icin can struct
+struct can_frame canSnd; // giden mesaj icin can struct
 
 MCP2515 mcp2515(10);
 
@@ -25,23 +24,22 @@ int on_deger, arka_deger, onsa_deger, onso_deger, arsa_deger, arso_deger;
 union ArrayToInteger {
     byte array[2];
     int integer;
-} converter;
+} intConverter;
 
 union ArrayToDouble {
     byte array[4];
     double number;
-} doubler;
+} doubleConverter;
 
 MS5803 prsensor(ADDRESS_HIGH); // basinc - sicaklik sensoru
 
-//Create variables to store results
-float temperature_c;
-double pressure_abs;
+float sicaklik;
+double basinc;
 
 void setup()
 {
     Serial.begin(9600);
-    Serial.println("Basladi.");
+    Serial.println("Basladi");
     SPI.begin();
     startMillis = millis(); // guncel zaman
 
@@ -66,27 +64,24 @@ void loop()
 
     if (mcp2515.readMessage(&canMsg) == MCP2515::ERROR_OK)
     {
-
-        /*
-    Serial.print(canMsg.can_id, HEX); // print ID
-    Serial.print(" "); 
-    Serial.print(canMsg.can_dlc, HEX); // print DLC
-    Serial.print(" ");
-*/
+        // Serial.print(canMsg.can_id, HEX);
+        // Serial.print(" "); 
+        // Serial.print(canMsg.can_dlc, HEX);
+        // Serial.print(" ");
         if (canMsg.can_id == 0x02)
         {
             for (int i = 0; i < canMsg.can_dlc; i += 2)
             {
-                converter.array[1] = canMsg.data[i];
-                converter.array[0] = canMsg.data[i + 1];
+                intConverter.array[1] = canMsg.data[i];
+                intConverter.array[0] = canMsg.data[i + 1];
                 if (i == 0)
-                    valueJoyStick_X_1 = converter.integer;
+                    valueJoyStick_X_1 = intConverter.integer;
                 else if (i == 2)
-                    valueJoyStick_Y_1 = converter.integer;
+                    valueJoyStick_Y_1 = intConverter.integer;
                 else if (i == 4)
-                    valueJoyStick_X_2 = converter.integer;
+                    valueJoyStick_X_2 = intConverter.integer;
                 else if (i == 6)
-                    valueJoyStick_Y_2 = converter.integer;
+                    valueJoyStick_Y_2 = intConverter.integer;
             }
 
             on.writeMicroseconds(valueJoyStick_X_1);
@@ -100,7 +95,7 @@ void loop()
             Serial.println(onso_deger);
             Serial.println(arsa_deger);
             Serial.println(arso_deger);
-            
+
             if (onsa_deger >= 2000)
                 onsa_deger = 2000;
             else if (onsa_deger <= 1000)
@@ -117,10 +112,10 @@ void loop()
                 arso_deger = 2000;
             else if (arso_deger <= 1000)
                 onsa_deger = 1000;
-              onsa.writeMicroseconds(onsa_deger);
-              onso.writeMicroseconds(onso_deger);
-              arsa.writeMicroseconds(arsa_deger);
-              arso.writeMicroseconds(arso_deger);
+            onsa.writeMicroseconds(onsa_deger);
+            onso.writeMicroseconds(onso_deger);
+            arsa.writeMicroseconds(arsa_deger);
+            arso.writeMicroseconds(arso_deger);
             delay(100);
             /*
             Serial.print(valueJoyStick_X_1);
@@ -133,29 +128,29 @@ void loop()
             Serial.println("--"); */
         }
     }
-    
-    if (currentMillis - startMillis >= period) //test whether the period has elapsed
-    {
-        pressure_abs = prsensor.getPressure(ADC_4096);
-        temperature_c = prsensor.getTemperature(CELSIUS, ADC_4096);
 
-        Serial.println(pressure_abs);
-        Serial.println(temperature_c);
+    if (currentMillis - startMillis >= period)
+    {
+        basinc = prsensor.getPressure(ADC_4096);
+        sicaklik = prsensor.getTemperature(CELSIUS, ADC_4096);
+
+        Serial.println(basinc);
+        Serial.println(sicaklik);
 
         canSnd.can_id = 0x03;
         canSnd.can_dlc = 8;
-        doubler.number = pressure_abs;
-        canSnd.data[0] = doubler.array[0];
-        canSnd.data[1] = doubler.array[1];
-        canSnd.data[2] = doubler.array[2];
-        canSnd.data[3] = doubler.array[3];
-        doubler.number = temperature_c;
-        canSnd.data[4] = doubler.array[0];
-        canSnd.data[5] = doubler.array[1];
-        canSnd.data[6] = doubler.array[2];
-        canSnd.data[7] = doubler.array[3];
+        doubleConverter.number = basinc;
+        canSnd.data[0] = doubleConverter.array[0];
+        canSnd.data[1] = doubleConverter.array[1];
+        canSnd.data[2] = doubleConverter.array[2];
+        canSnd.data[3] = doubleConverter.array[3];
+        doubleConverter.number = sicaklik;
+        canSnd.data[4] = doubleConverter.array[0];
+        canSnd.data[5] = doubleConverter.array[1];
+        canSnd.data[6] = doubleConverter.array[2];
+        canSnd.data[7] = doubleConverter.array[3];
 
-        startMillis = currentMillis; //IMPORTANT to save the start time of the current LED state.
+        startMillis = currentMillis;
         mcp2515.sendMessage(&canSnd);
     }
 }
