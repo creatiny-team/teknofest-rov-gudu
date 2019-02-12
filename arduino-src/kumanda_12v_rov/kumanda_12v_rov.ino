@@ -1,6 +1,4 @@
-#include <Servo.h>
-#include <SPI.h>
-#include <mcp2515.h>
+#include <mcp2515.h>  //https://github.com/autowp/arduino-mcp2515
 
 #define maxdeger 2000 //max 2000 oluyor escler 1000-2000 arası calisir
 #define mindeger 1000
@@ -35,7 +33,6 @@ union ArrayToDouble {
 void setup()
 {
     Serial.begin(9600);
-    SPI.begin();
 
     mcp2515.reset();
     mcp2515.setBitrate(CAN_40KBPS);
